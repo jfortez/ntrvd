@@ -1,36 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import type { Example } from './example.schema';
+import type { Example, CreateExample, UpdateExample } from './example.schema';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ExampleService {
-  create() {
-    return 'This action adds a new example';
+  private examples: Array<Example & { id: string }> = [];
+
+  create(data: CreateExample): Promise<Example & { id: string }> {
+    const newExample: Example = {
+      ...data,
+      id: uuid(),
+    };
+    this.examples.push(newExample);
+    return Promise.resolve(newExample);
   }
 
-  findAll(): Promise<Example[]> {
-    return new Promise<Example[]>((resolve) => {
-      resolve([
-        {
-          foo: 'foo',
-          bar: 1,
-        },
-        {
-          foo: 'bar',
-          bar: 2,
-        },
-      ]);
-    });
+  findAll(): Promise<Array<Example & { id: string }>> {
+    return Promise.resolve(this.examples);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} example`;
+  findOne(id: string): Promise<(Example & { id: string }) | null> {
+    const example = this.examples.find((e) => e.id === id);
+    return Promise.resolve(example || null);
   }
 
-  update(id: number) {
-    return `This action updates a #${id} example`;
+  update(
+    id: string,
+    data: UpdateExample,
+  ): Promise<(Example & { id: string }) | null> {
+    const index = this.examples.findIndex((e) => e.id === id);
+    if (index === -1) return Promise.resolve(null);
+
+    this.examples[index] = { ...data, id };
+    return Promise.resolve(this.examples[index]);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} example`;
+  remove(id: string): Promise<boolean> {
+    const index = this.examples.findIndex((e) => e.id === id);
+    if (index === -1) return Promise.resolve(false);
+
+    this.examples.splice(index, 1);
+    return Promise.resolve(true);
   }
 }

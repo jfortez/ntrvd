@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
+import { TrpcModule } from './trpc/trpc.module';
+import { ExampleModule } from './example/example.module';
+import { DatabaseModule } from '@/database/database.module';
+// import { LoggerMiddleware } from './middleware/logger.middleware';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [TrpcModule, ExampleModule, DatabaseModule, AuthModule, UserModule],
+  providers: [],
 })
 export class AppModule {}

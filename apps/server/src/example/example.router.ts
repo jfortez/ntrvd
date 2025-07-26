@@ -4,9 +4,8 @@ import { ExampleService } from './example.service';
 import { z } from 'zod';
 import { example } from './example.schema';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
-// import {} from 'nestjs-trpc/types'
 
-@Router()
+@Router({ alias: 'example' })
 export class ExampleRouter {
   constructor(
     @Inject(ExampleService) private readonly exampleService: ExampleService,
@@ -14,12 +13,12 @@ export class ExampleRouter {
 
   @Query({ output: z.array(example) })
   @UseMiddlewares(LoggerMiddleware)
-  findAll() {
+  getExamples() {
     return this.exampleService.findAll();
   }
 
   @Query({ input: z.number(), output: example })
-  findOne(@Input() id: number) {
+  getExample(@Input() id: number) {
     return this.exampleService.findOne(id);
   }
 }

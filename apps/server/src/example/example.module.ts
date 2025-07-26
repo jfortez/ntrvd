@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { ExampleService } from './example.service';
 import { ExampleRouter } from './example.router';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
+import { ConsoleLogger } from '@nestjs/common';
 
 @Module({
   controllers: [],
-  providers: [ExampleService, ExampleRouter, LoggerMiddleware],
+  providers: [ExampleService, ExampleRouter, LoggerMiddleware, ConsoleLogger],
 })
 export class ExampleModule {}

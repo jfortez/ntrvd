@@ -1,13 +1,24 @@
 {
-  "name": "trpc",
+  "name": "@repo/trpc",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "exports": {
-    "./server": "./server/index.js",
-    "./client": "./client/index.js"
+    "./server": "./src/server/index.ts",
+    "./client": "./src/client/index.ts"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@tanstack/react-query": "^5.83.0",
+    "@trpc/client": "^11.4.3",
+    "@trpc/server": "^11.4.3",
+    "@trpc/tanstack-react-query": "^11.4.3",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^4.0.10"
+  }
 }

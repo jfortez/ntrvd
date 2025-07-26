@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { Example } from './example.schema';
 
 @Injectable()
 export class ExampleService {
@@ -6,8 +7,19 @@ export class ExampleService {
     return 'This action adds a new example';
   }
 
-  findAll() {
-    return `This action returns all example`;
+  findAll(): Promise<Example[]> {
+    return new Promise<Example[]>((resolve) => {
+      resolve([
+        {
+          foo: 'foo',
+          bar: 1,
+        },
+        {
+          foo: 'bar',
+          bar: 2,
+        },
+      ]);
+    });
   }
 
   findOne(id: number) {

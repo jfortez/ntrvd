@@ -1,45 +1,40 @@
-import { Injectable } from '@nestjs/common';
-import type { Example, CreateExample, UpdateExample } from './example.schema';
-import { v4 as uuid } from 'uuid';
+import { Inject, Injectable } from '@nestjs/common';
+import { type CreateExample, type UpdateExample } from './example.schema';
+import { DRIZZLE } from '@/database/database.provider';
+import { eq } from 'drizzle-orm';
+import { DrizzleDB } from '@/database/types';
+import { exampleSchema } from '@/database/schema/example';
 
 @Injectable()
 export class ExampleService {
-  private examples: Array<Example & { id: string }> = [];
-
-  create(data: CreateExample): Promise<Example & { id: string }> {
-    const newExample: Example = {
+  constructor(
+    @Inject(DRIZZLE)
+    private db: DrizzleDB,
+  ) {}
+  create(data: CreateExample) {
+    return this.db.insert(exampleSchema).values({
       ...data,
-      id: uuid(),
-    };
-    this.examples.push(newExample);
-    return Promise.resolve(newExample);
+    });
   }
 
-  findAll(): Promise<Array<Example & { id: string }>> {
-    return Promise.resolve(this.examples);
+  findAll() {
+    return this.db.select().from(exampleSchema);
   }
 
-  findOne(id: string): Promise<(Example & { id: string }) | null> {
-    const example = this.examples.find((e) => e.id === id);
-    return Promise.resolve(example || null);
+  findOne(id: number) {
+    return this.db.query.exampleSchema.findFirst({
+      where: (example) => eq(example.id, id),
+    });
   }
 
-  update(
-    id: string,
-    data: UpdateExample,
-  ): Promise<(Example & { id: string }) | null> {
-    const index = this.examples.findIndex((e) => e.id === id);
-    if (index === -1) return Promise.resolve(null);
-
-    this.examples[index] = { ...data, id };
-    return Promise.resolve(this.examples[index]);
+  update(id: number, data: UpdateExample) {
+    return this.db
+      .update(exampleSchema)
+      .set(data)
+      .where(eq(exampleSchema.id, id));
   }
 
-  remove(id: string): Promise<boolean> {
-    const index = this.examples.findIndex((e) => e.id === id);
-    if (index === -1) return Promise.resolve(false);
-
-    this.examples.splice(index, 1);
-    return Promise.resolve(true);
+  remove(id: number) {
+    return this.db.delete(exampleSchema).where(eq(exampleSchema.id, id));
   }
 }

@@ -11,19 +11,17 @@ export class ExampleRouter {
     @Inject(ExampleService) private readonly exampleService: ExampleService,
   ) {}
 
-  @Query({
-    output: z.array(exampleSchema.extend({ id: z.string() })),
-  })
+  @Query()
   @UseMiddlewares(LoggerMiddleware)
   getExamples() {
     return this.exampleService.findAll();
   }
 
   @Query({
-    input: z.string(),
+    input: z.number(),
     output: exampleSchema.extend({ id: z.string() }).nullable(),
   })
-  getExample(@Input() id: string) {
+  getExample(@Input() id: number) {
     return this.exampleService.findOne(id);
   }
 

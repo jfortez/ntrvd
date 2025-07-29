@@ -33,7 +33,7 @@ const appRouter = t.router({
   }),
   auth: t.router({
     login: publicProcedure.input(z.object({
-      email: z.string().email('Email inválido'),
+      email: z.email('Email inválido'),
       password: z.string().min(1, 'La contraseña es requerida'),
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     logout: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)

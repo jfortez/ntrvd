@@ -6,20 +6,20 @@ import { exampleSchema, createExampleSchema } from './example.schema';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
 
 @Router({ alias: 'example' })
+// @UseMiddlewares(LoggerMiddleware)
 export class ExampleRouter {
   constructor(
     @Inject(ExampleService) private readonly exampleService: ExampleService,
   ) {}
 
   @Query()
-  @UseMiddlewares(LoggerMiddleware)
   getExamples() {
     return this.exampleService.findAll();
   }
 
   @Query({
     input: z.number(),
-    output: exampleSchema.extend({ id: z.string() }).nullable(),
+    output: exampleSchema,
   })
   getExample(@Input() id: number) {
     return this.exampleService.findOne(id);

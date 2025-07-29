@@ -6,7 +6,7 @@ import { ExampleModule } from './example/example.module';
 import { DatabaseModule } from '@/database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import Joi from 'joi';
+import * as Joi from 'joi';
 
 @Module({
   imports: [

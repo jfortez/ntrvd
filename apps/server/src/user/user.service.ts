@@ -4,7 +4,7 @@ import { hashSync } from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.provider';
 import type { DrizzleDB } from '../database/types';
-import { usersSchema, type NewUser } from '../database/schema/users';
+import { usersTable, type NewUser } from '../database/schema/users';
 import { type CreateUser } from './user.schema';
 
 @Injectable()
@@ -33,7 +33,7 @@ export class UserService {
       };
 
       const [user] = await this.db
-        .insert(usersSchema)
+        .insert(usersTable)
         .values(newUser)
         .returning();
 
@@ -52,7 +52,7 @@ export class UserService {
 
   async findAll() {
     try {
-      const users = await this.db.query.usersSchema.findMany({
+      const users = await this.db.query.usersTable.findMany({
         columns: {
           password: false,
         },
@@ -68,8 +68,8 @@ export class UserService {
 
   async findOne(id: number) {
     try {
-      const user = await this.db.query.usersSchema.findFirst({
-        where: eq(usersSchema.id, id),
+      const user = await this.db.query.usersTable.findFirst({
+        where: eq(usersTable.id, id),
         columns: {
           password: false,
         },
@@ -96,8 +96,8 @@ export class UserService {
     try {
       const [user] = await this.db
         .select()
-        .from(usersSchema)
-        .where(eq(usersSchema.email, email));
+        .from(usersTable)
+        .where(eq(usersTable.email, email));
 
       return user;
     } catch {
@@ -116,13 +116,13 @@ export class UserService {
       }
 
       const [user] = await this.db
-        .update(usersSchema)
+        .update(usersTable)
         .set({
           ...data,
           updatedAt: new Date(),
         })
-        .where(eq(usersSchema.id, id))
-        .returning({ id: usersSchema.id });
+        .where(eq(usersTable.id, id))
+        .returning({ id: usersTable.id });
 
       if (!user) {
         throw new TRPCError({
@@ -143,9 +143,9 @@ export class UserService {
   async remove(id: number) {
     try {
       const [user] = await this.db
-        .delete(usersSchema)
-        .where(eq(usersSchema.id, id))
-        .returning({ id: usersSchema.id });
+        .delete(usersTable)
+        .where(eq(usersTable.id, id))
+        .returning({ id: usersTable.id });
 
       if (!user) {
         throw new TRPCError({

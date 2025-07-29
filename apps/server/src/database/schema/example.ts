@@ -5,3 +5,5 @@ export const exampleSchema = pgTable('example', {
   foo: text('foo').notNull(),
   bar: integer('bar'),
 });
+
+export type Example = typeof exampleSchema.$inferSelect;

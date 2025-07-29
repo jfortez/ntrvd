@@ -7,3 +7,5 @@ export const usersSchema = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+export type User = typeof usersSchema.$inferSelect;

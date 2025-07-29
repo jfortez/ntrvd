@@ -3,7 +3,7 @@ import { type CreateExample, type UpdateExample } from './example.schema';
 import { DRIZZLE } from '@/database/database.provider';
 import { eq } from 'drizzle-orm';
 import { DrizzleDB } from '@/database/types';
-import { exampleSchema } from '@/database/schema/example';
+import { exampleSchema, type Example } from '@/database/schema/example';
 
 @Injectable()
 export class ExampleService {
@@ -27,7 +27,7 @@ export class ExampleService {
     });
   }
 
-  update(id: number, data: UpdateExample) {
+  update(id: Example['id'], data: UpdateExample) {
     return this.db
       .update(exampleSchema)
       .set(data)

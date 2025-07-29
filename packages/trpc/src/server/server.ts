@@ -8,7 +8,7 @@ const appRouter = t.router({
   example: t.router({
     getExamples: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     getExample: publicProcedure.input(z.number()).output(z.object({
-      id: z.string(),
+      id: z.number(),
       foo: z.string().min(1, 'Foo is required'),
       bar: z.number().int().min(0, 'Bar must be a non-negative integer'),
     }).extend({ id: z.string() }).nullable()).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
@@ -16,20 +16,43 @@ const appRouter = t.router({
       foo: z.string().min(1, 'Foo is required'),
       bar: z.number().int().min(0, 'Bar must be a non-negative integer'),
     })).output(z.object({
-      id: z.string(),
+      id: z.number(),
       foo: z.string().min(1, 'Foo is required'),
       bar: z.number().int().min(0, 'Bar must be a non-negative integer'),
     }).extend({ id: z.string() })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     updateExample: publicProcedure.input(z.object({
-      id: z.string(),
+      id: z.number(),
       foo: z.string().min(1, 'Foo is required'),
       bar: z.number().int().min(0, 'Bar must be a non-negative integer'),
     })).output(z.object({
-      id: z.string(),
+      id: z.number(),
       foo: z.string().min(1, 'Foo is required'),
       bar: z.number().int().min(0, 'Bar must be a non-negative integer'),
     }).extend({ id: z.string() }).nullable()).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    deleteExample: publicProcedure.input(z.string()).output(z.boolean()).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    deleteExample: publicProcedure.input(z.number()).output(z.boolean()).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  auth: t.router({
+    login: publicProcedure.input(z.object({
+      email: z.string().email('Email inválido'),
+      password: z.string().min(1, 'La contraseña es requerida'),
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    logout: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+  }),
+  user: t.router({
+    register: publicProcedure.input(z.object({
+      id: z.number(),
+      name: z.string().min(1, 'El nombre es requerido'),
+      email: z.string().email('Email inválido'),
+      password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }).omit({
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+    })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    getUser: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    getUsers: publicProcedure.input(z.number()).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

@@ -43,10 +43,10 @@ export class ExampleRouter {
   }
 
   @Mutation({
-    input: z.string(),
+    input: z.number(),
     output: z.boolean(),
   })
-  deleteExample(@Input() id: string) {
+  deleteExample(@Input() id: number) {
     return this.exampleService.remove(id);
   }
 }

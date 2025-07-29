@@ -9,7 +9,7 @@ const db = DatabaseConnection.getInstance(process.env.DATABASE_URL);
 async function main() {
   const exampleItem: typeof exampleSchema.$inferInsert = {
     foo: 'Hello',
-    bar: 'World',
+    bar: 1,
   };
 
   await db.insert(exampleSchema).values(exampleItem);
@@ -22,7 +22,7 @@ async function main() {
     .update(exampleSchema)
     .set({
       foo: 'Updated Hello',
-      bar: 'Updated World',
+      bar: 1,
     })
     .where(eq(exampleSchema.foo, exampleItem.foo));
   console.log('Example item info updated!');

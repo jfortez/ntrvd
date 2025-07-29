@@ -7,3 +7,5 @@ export const exampleSchema = pgTable('example', {
 });
 
 export type Example = typeof exampleSchema.$inferSelect;
+
+export type UpdateExample = Omit<Example, 'id'>;

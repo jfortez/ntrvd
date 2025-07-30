@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "./utils/trpc";
 
 const UserView = () => {
-  const { data } = useQuery(trpc.example.getExamples.queryOptions());
+  const { data, } = useQuery(trpc.example.getExamples.queryOptions());
   const { mutate } = useMutation(trpc.auth.login.mutationOptions());
 
   const onLogin = () => {

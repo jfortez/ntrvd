@@ -6,7 +6,7 @@ const publicProcedure = t.procedure;
 
 const appRouter = t.router({
   example: t.router({
-    getExamples: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    getExamples: publicProcedure.output(z.array(z.object({ id: z.number(), foo: z.string(), bar: z.number() }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     getExample: publicProcedure.input(z.number()).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     createExample: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     updateExample: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),

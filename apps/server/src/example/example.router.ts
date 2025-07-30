@@ -13,7 +13,9 @@ export class ExampleRouter {
     @Inject(ExampleService) private readonly exampleService: ExampleService,
   ) {}
 
-  @Query()
+  @Query({
+    output: z.array(z.object({ id: z.number(), foo: z.string(), bar: z.number() })),
+  })
   @UseMiddlewares(AuthMiddleware)
   getExamples() {
     return this.exampleService.findAll();

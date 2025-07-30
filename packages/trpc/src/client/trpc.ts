@@ -1,13 +1,14 @@
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
 import type { AppRouter } from "../server";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { QueryClient } from "@tanstack/react-query";
+// import superjson, { SuperJSON } from "superjson";
 
 export class TrpcClient {
   private static instance: TrpcClient | null = null;
 
   public readonly queryClient: QueryClient | undefined;
-  private readonly trpcClient: ReturnType<typeof createTRPCClient<AppRouter>> | undefined;
+  public readonly trpcClient: ReturnType<typeof createTRPCClient<AppRouter>> | undefined;
   public readonly trpc: ReturnType<typeof createTRPCOptionsProxy<AppRouter>> | undefined;
 
   constructor(url: string) {
@@ -41,11 +42,19 @@ export class TrpcClient {
 
     this.trpcClient = createTRPCClient<AppRouter>({
       links: [
+        loggerLink(),
         httpBatchLink({
           url,
-          headers: () => ({
-            // headers
-          }),
+          // transformer: SuperJSON,
+          headers() {
+            return {};
+          },
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
         }),
       ],
     });
@@ -56,36 +65,6 @@ export class TrpcClient {
     });
 
     TrpcClient.instance = this;
-
-    this.queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          refetchOnWindowFocus: false,
-          staleTime: 60 * 1000, // 1 minute
-          retry: 1,
-          gcTime: 5 * 60 * 1000, // 5 minutes
-        },
-        mutations: {
-          retry: 1,
-        },
-      },
-    });
-
-    this.trpcClient = createTRPCClient<AppRouter>({
-      links: [
-        httpBatchLink({
-          url,
-          headers: () => ({
-            // headers
-          }),
-        }),
-      ],
-    });
-
-    this.trpc = createTRPCOptionsProxy<AppRouter>({
-      client: this.trpcClient,
-      queryClient: this.queryClient,
-    });
   }
 
   public static getInstance(): TrpcClient {

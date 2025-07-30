@@ -1,6 +1,5 @@
 import { TRPCError } from '@trpc/server';
 import { Injectable } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import {
   MiddlewareOptions,
@@ -8,7 +7,7 @@ import {
   TRPCMiddleware,
 } from 'nestjs-trpc';
 import { Context } from '@/trpc/trpc.context';
-import { SessionUser } from '@/user/user.schema';
+import { SessionUser } from '@/database/schema/users';
 
 @Injectable()
 export class AuthMiddleware implements TRPCMiddleware {
@@ -28,7 +27,7 @@ export class AuthMiddleware implements TRPCMiddleware {
     try {
       const payload = await this.jwtService.verifyAsync<SessionUser>(token);
       req['user'] = payload; // Attach user info to request
-      return opts.next();
+      return opts.next({ ctx: payload });
     } catch {
       throw new TRPCError({
         code: 'UNAUTHORIZED',

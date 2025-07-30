@@ -4,39 +4,34 @@ import { ExampleService } from './example.service';
 import { z } from 'zod';
 import { exampleSchema, createExampleSchema } from './example.schema';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
+import { AuthMiddleware } from '@/middleware/auth.middleware';
 
 @Router({ alias: 'example' })
-// @UseMiddlewares(LoggerMiddleware)
+@UseMiddlewares(LoggerMiddleware)
 export class ExampleRouter {
   constructor(
     @Inject(ExampleService) private readonly exampleService: ExampleService,
   ) {}
 
   @Query()
+  @UseMiddlewares(AuthMiddleware)
   getExamples() {
     return this.exampleService.findAll();
   }
 
   @Query({
     input: z.number(),
-    output: exampleSchema,
   })
   getExample(@Input() id: number) {
     return this.exampleService.findOne(id);
   }
 
-  @Mutation({
-    input: createExampleSchema,
-    output: exampleSchema.extend({ id: z.string() }),
-  })
+  @Mutation()
   createExample(@Input() data: z.infer<typeof createExampleSchema>) {
     return this.exampleService.create(data);
   }
 
-  @Mutation({
-    input: exampleSchema,
-    output: exampleSchema.extend({ id: z.string() }).nullable(),
-  })
+  @Mutation()
   updateExample(@Input() data: z.infer<typeof exampleSchema>) {
     const { id, ...updateData } = data;
     return this.exampleService.update(id, updateData);

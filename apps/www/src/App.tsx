@@ -1,12 +1,21 @@
 import { TrpcProvider } from "@repo/trpc/client";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { trpc } from "./utils/trpc";
 
 const UserView = () => {
-  const { data, isLoading, error } = useQuery(trpc.example.getExamples.queryOptions());
+  const { data } = useQuery(trpc.example.getExamples.queryOptions());
+  const { mutate } = useMutation(trpc.auth.login.mutationOptions());
 
-  console.log({ data, isLoading, error });
-  return <div>users</div>;
+  const onLogin = () => {
+    mutate({ email: "admin@example.com", password: "password123" });
+  };
+
+  console.log(data);
+  return (
+    <div>
+      <button onClick={onLogin}>login</button>
+    </div>
+  );
 };
 
 const App = () => {

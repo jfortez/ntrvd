@@ -1,15 +1,30 @@
 import { Inject } from '@nestjs/common';
-import { Router, Query, Input, Mutation } from 'nestjs-trpc';
+import { Router, Query, Input, Mutation, Ctx } from 'nestjs-trpc';
 import { UserService } from './user.service';
 import { createUserSchema } from './user.schema';
 import { TRPCError } from '@trpc/server';
 import { UseMiddlewares } from 'nestjs-trpc';
 import { AuthMiddleware } from '../middleware/auth.middleware';
 import { z } from 'zod';
+import { Context } from '@/trpc/trpc.context';
 
 @Router({ alias: 'user' })
 export class UserRouter {
   constructor(@Inject(UserService) private readonly userService: UserService) {}
+
+  @Query()
+  @UseMiddlewares(AuthMiddleware)
+  getProfile(@Ctx() ctx: Context) {
+    const { user } = ctx;
+
+    if (!user) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'No autorizado',
+      });
+    }
+    return user;
+  }
 
   @Mutation({ input: createUserSchema })
   async register(@Input() data: z.infer<typeof createUserSchema>) {

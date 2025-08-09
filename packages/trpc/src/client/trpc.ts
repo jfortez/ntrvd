@@ -2,7 +2,6 @@ import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
 import type { AppRouter } from "../server";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { QueryClient } from "@tanstack/react-query";
-// import superjson, { SuperJSON } from "superjson";
 
 export class TrpcClient {
   private static instance: TrpcClient | null = null;

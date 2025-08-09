@@ -20,6 +20,7 @@ const appRouter = t.router({
     logout: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
   user: t.router({
+    getProfile: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     register: publicProcedure.input(z.object({
       id: z.number(),
       name: z.string().min(1, 'El nombre es requerido'),

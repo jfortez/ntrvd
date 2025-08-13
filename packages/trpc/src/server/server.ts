@@ -20,7 +20,14 @@ const appRouter = t.router({
     logout: publicProcedure.mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   }),
   user: t.router({
-    getProfile: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    getProfile: publicProcedure.output(z.object({
+      id: z.number(),
+      name: z.string().min(1, 'El nombre es requerido'),
+      email: z.string().email('Email inválido'),
+      password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }).omit({ password: true })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
     register: publicProcedure.input(z.object({
       id: z.number(),
       name: z.string().min(1, 'El nombre es requerido'),

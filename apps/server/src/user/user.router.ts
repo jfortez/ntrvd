@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { Router, Query, Input, Mutation, Ctx } from 'nestjs-trpc';
 import { UserService } from './user.service';
-import { createUserSchema } from './user.schema';
+import { createUserSchema, userProfile, userSchema } from './user.schema';
 import { TRPCError } from '@trpc/server';
 import { UseMiddlewares } from 'nestjs-trpc';
 import { AuthMiddleware } from '../middleware/auth.middleware';
@@ -12,7 +12,9 @@ import { Context } from '@/trpc/trpc.context';
 export class UserRouter {
   constructor(@Inject(UserService) private readonly userService: UserService) {}
 
-  @Query()
+  @Query({
+    output: userProfile,
+  })
   @UseMiddlewares(AuthMiddleware)
   getProfile(@Ctx() ctx: Context) {
     const { user } = ctx;
@@ -39,13 +41,15 @@ export class UserRouter {
     }
   }
 
-  @Query()
+  @Query({
+    output: z.array(userSchema),
+  })
   @UseMiddlewares(AuthMiddleware)
   async getUser() {
     return this.userService.findAll();
   }
 
-  @Query({ input: z.number() })
+  @Query({ input: z.number(), output: userSchema })
   @UseMiddlewares(AuthMiddleware)
   async getUsers(@Input() id: number) {
     const user = await this.userService.findOne(id);

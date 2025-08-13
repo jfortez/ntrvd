@@ -4,7 +4,7 @@ import { trpc } from "@/utils/trpc";
 import { useQuery } from "@tanstack/react-query";
 
 type AuthContextType = {
-  user: UserProfile;
+  user?: UserProfile;
   isAuth: boolean;
 };
 

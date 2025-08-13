@@ -9,6 +9,8 @@ export const userSchema = z.object({
   updatedAt: z.date(),
 });
 
+const safeUser = userSchema.omit({ password: true });
+
 export const createUserSchema = userSchema.omit({
   id: true,
   createdAt: true,
@@ -19,6 +21,8 @@ export const loginSchema = z.object({
   email: z.email('Email inválido'),
   password: z.string().min(1, 'La contraseña es requerida'),
 });
+
+export const userProfile = safeUser;
 
 export type User = z.infer<typeof userSchema>;
 export type CreateUser = z.infer<typeof createUserSchema>;

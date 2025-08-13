@@ -1,32 +1,24 @@
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+
 import { TrpcProvider } from "@repo/trpc/client";
 import AuthProvider from "@/providers/AuthProvider";
+import { routeTree } from "./routeTree.gen";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { trpc } from "./utils/trpc";
+const router = createRouter({ routeTree });
 
-const UserView = () => {
-  const { data } = useQuery(trpc.example.getExamples.queryOptions());
-  const { mutate } = useMutation(trpc.auth.login.mutationOptions());
-
-  const onLogin = () => {
-    mutate({ email: "admin@example.com", password: "password123" });
-  };
-
-  console.log(data);
-  return (
-    <div>
-      <button onClick={onLogin}>login</button>
-    </div>
-  );
-};
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 const App = () => {
   return (
-    <AuthProvider>
-      <TrpcProvider>
-        <UserView />
-      </TrpcProvider>
-    </AuthProvider>
+    <TrpcProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </TrpcProvider>
   );
 };
 

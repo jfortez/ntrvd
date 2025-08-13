@@ -40,8 +40,22 @@ const appRouter = t.router({
       createdAt: true,
       updatedAt: true,
     })).mutation(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    getUser: publicProcedure.query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
-    getUsers: publicProcedure.input(z.number()).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
+    getUser: publicProcedure.output(z.array(z.object({
+      id: z.number(),
+      name: z.string().min(1, 'El nombre es requerido'),
+      email: z.string().email('Email inválido'),
+      password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }))).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any),
+    getUsers: publicProcedure.input(z.number()).output(z.object({
+      id: z.number(),
+      name: z.string().min(1, 'El nombre es requerido'),
+      email: z.string().email('Email inválido'),
+      password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    })).query(async () => "PLACEHOLDER_DO_NOT_REMOVE" as any)
   })
 });
 export type AppRouter = typeof appRouter;

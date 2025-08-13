@@ -7,11 +7,16 @@ import {
   TRPCMiddleware,
 } from 'nestjs-trpc';
 import { Context } from '@/trpc/trpc.context';
-import { SessionUser } from '@/database/schema/users';
+import { JwtPayload } from '@/auth/auth.service';
+import { UserService } from '@/user/user.service';
+import { SessionUser } from '@/user/user.schema';
 
 @Injectable()
 export class AuthMiddleware implements TRPCMiddleware {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
+  ) {}
   async use(
     opts: MiddlewareOptions<Context>,
   ): Promise<MiddlewareResponse | Promise<MiddlewareResponse>> {
@@ -25,9 +30,31 @@ export class AuthMiddleware implements TRPCMiddleware {
       });
     }
     try {
-      const payload = await this.jwtService.verifyAsync<SessionUser>(token);
-      req['user'] = payload; // Attach user info to request
-      return opts.next({ ctx: payload });
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+
+      const user = await this.userService.findByEmail(payload.email);
+
+      if (!user) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'No autorizado - Usuario no encontrado',
+        });
+      }
+
+      const sessionUser: SessionUser = {
+        createdAt: user.createdAt,
+        email: user.email,
+        id: user.id,
+        updatedAt: user.updatedAt,
+        name: user.name,
+      };
+
+      req['user'] = sessionUser; // Attach user info to request
+      return opts.next({
+        ctx: {
+          user: sessionUser,
+        },
+      });
     } catch {
       throw new TRPCError({
         code: 'UNAUTHORIZED',

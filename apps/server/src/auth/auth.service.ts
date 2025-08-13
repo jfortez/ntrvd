@@ -6,6 +6,11 @@ import { compareSync } from 'bcrypt';
 import { Response } from 'express';
 import { LoginUser } from '../user/user.schema';
 
+export type JwtPayload = {
+  sub: number;
+  email: string;
+};
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -35,7 +40,7 @@ export class AuthService {
 
   async login(loginData: LoginUser) {
     const user = await this.validateUser(loginData.email, loginData.password);
-    const payload = { sub: user.id, email: user.email };
+    const payload: JwtPayload = { sub: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
     return token;
   }

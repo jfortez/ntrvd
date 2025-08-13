@@ -1,10 +1,11 @@
-import { NewUser, usersTable } from '../schema/users';
+import { usersTable } from '../schema/users';
 import { DatabaseConnection } from '../database.provider';
 import { hash } from 'bcrypt';
+import { CreateUser } from '@/user/user.schema';
 
 const db = DatabaseConnection.getInstance(process.env.DATABASE_URL);
 
-const users: Omit<NewUser, 'password'>[] = [
+const users: Omit<CreateUser, 'password'>[] = [
   {
     name: 'Admin User',
     email: 'admin@example.com',

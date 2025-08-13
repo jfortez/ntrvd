@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TRPCContext } from 'nestjs-trpc';
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import { Request, Response } from 'express';
-import { SessionUser } from '@/database/schema/users';
+import { SessionUser } from '@/user/user.schema';
 
 export type Context = {
   req: Request;

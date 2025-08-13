@@ -4,7 +4,7 @@ import { hashSync } from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.provider';
 import type { DrizzleDB } from '../database/types';
-import { usersTable, type NewUser } from '../database/schema/users';
+import { usersTable } from '../database/schema/users';
 import { type CreateUser } from './user.schema';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class UserService {
       const hashedPassword = hashSync(data.password, 10);
 
       // Crear el usuario
-      const newUser: NewUser = {
+      const newUser: CreateUser = {
         name: data.name,
         email: data.email,
         password: hashedPassword,
@@ -94,10 +94,9 @@ export class UserService {
 
   async findByEmail(email: string) {
     try {
-      const [user] = await this.db
-        .select()
-        .from(usersTable)
-        .where(eq(usersTable.email, email));
+      const user = await this.db.query.usersTable.findFirst({
+        where: eq(usersTable.email, email),
+      });
 
       return user;
     } catch {

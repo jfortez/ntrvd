@@ -8,8 +8,3 @@ export const usersTable = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
-
-export type User = typeof usersTable.$inferSelect;
-export type NewUser = typeof usersTable.$inferInsert;
-
-export type SessionUser = Omit<User, 'password'>;

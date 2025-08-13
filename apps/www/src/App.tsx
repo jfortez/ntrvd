@@ -1,10 +1,15 @@
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
 import { TrpcProvider } from "@repo/trpc/client";
-import AuthProvider from "@/providers/AuthProvider";
+import AuthProvider, { useAuth } from "@/providers/Auth";
 import { routeTree } from "./routeTree.gen";
 
-const router = createRouter({ routeTree });
+const router = createRouter({
+  routeTree,
+  context: {
+    auth: undefined!,
+  },
+});
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -12,11 +17,17 @@ declare module "@tanstack/react-router" {
   }
 }
 
+const AppInner = () => {
+  const auth = useAuth();
+  console.log(auth);
+  return <RouterProvider router={router} context={{ auth }} />;
+};
+
 const App = () => {
   return (
     <TrpcProvider>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <AppInner />
       </AuthProvider>
     </TrpcProvider>
   );

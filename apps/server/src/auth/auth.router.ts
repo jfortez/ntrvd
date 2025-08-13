@@ -26,6 +26,10 @@ export class AuthRouter {
         sameSite: 'strict', // Protección contra CSRF
         maxAge: TOKEN_EXPIRATION, // 7 días en milisegundos
       });
+
+      return {
+        message: 'Inicio de sesión exitoso',
+      };
     } catch (error) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',

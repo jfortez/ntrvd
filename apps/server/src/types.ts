@@ -1,4 +1,4 @@
-import { SessionUser } from '@/database/schema/users';
+import { SessionUser } from './user/user.schema';
 
 export type Result<T = unknown> = {
   message: string;

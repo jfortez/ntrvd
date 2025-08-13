@@ -1,9 +1,10 @@
-import type { Outputs } from "@repo/trpc/client";
+import type { Outputs, Inputs } from "@repo/trpc/client";
 
-type UserRoute = Outputs["user"];
+type OUserRoute = Outputs["user"];
 
-type AuthRoute = Outputs["auth"];
+type IAuthRoute = Inputs["auth"];
 
-export type UserProfile = UserRoute["getProfile"];
-export type UserRegister = UserRoute["register"];
-export type UserLogin = AuthRoute["login"];
+export type UserProfile = OUserRoute["getProfile"];
+export type UserRegister = OUserRoute["register"];
+
+export type LoginArgs = IAuthRoute["login"];

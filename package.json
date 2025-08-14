@@ -11,7 +11,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "services:up": "docker-compose -f docker-compose-dev.yml up -d"
+    "services:up": "docker-compose --env-file ./apps/server/.env -f docker-compose-dev.yml up -d"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

@@ -1,5 +1,5 @@
 import type { LoginArgs, UserProfile } from "@/types/trpc";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useCallback, useContext, useMemo } from "react";
 import { trpc } from "@/utils/trpc";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -26,15 +26,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const { mutateAsync: loginMutation } = useMutation(trpc.auth.login.mutationOptions());
   const { mutateAsync: logoutMutation } = useMutation(trpc.auth.logout.mutationOptions());
 
-  const login = async (args: LoginArgs) => {
-    await loginMutation(args);
-    await refetch();
-  };
+  const login = useCallback(
+    async (args: LoginArgs) => {
+      await loginMutation(args);
+      await refetch();
+    },
+    [loginMutation, refetch]
+  );
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     await logoutMutation();
     queryClient.setQueryData(trpc.user.getProfile.queryKey(), undefined);
-  };
+  }, [logoutMutation, queryClient]);
 
   const value = useMemo<AuthContextType>(() => {
     return {
@@ -43,13 +46,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       login,
       logout,
     };
-  }, []);
+  }, [login, logout, user]);
 
-  return (
-    <AuthContext.Provider value={value}>
-      {isLoading ? <div>loading...</div> : children}
-    </AuthContext.Provider>
-  );
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

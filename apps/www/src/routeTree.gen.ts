@@ -12,9 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as appLoginRouteImport } from './routes/(app)/login'
-import { Route as appInvoicesRouteImport } from './routes/(app)/invoices'
-import { Route as appDashboardRouteImport } from './routes/(app)/dashboard'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -30,66 +30,64 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedInvoicesRoute = AuthenticatedInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const appLoginRoute = appLoginRouteImport.update({
   id: '/(app)/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const appInvoicesRoute = appInvoicesRouteImport.update({
-  id: '/(app)/invoices',
-  path: '/invoices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const appDashboardRoute = appDashboardRouteImport.update({
-  id: '/(app)/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard': typeof appDashboardRoute
-  '/invoices': typeof appInvoicesRoute
   '/login': typeof appLoginRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/dashboard': typeof appDashboardRoute
-  '/invoices': typeof appInvoicesRoute
   '/login': typeof appLoginRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/about': typeof AboutRoute
-  '/(app)/dashboard': typeof appDashboardRoute
-  '/(app)/invoices': typeof appInvoicesRoute
   '/(app)/login': typeof appLoginRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/dashboard' | '/invoices' | '/login'
+  fullPaths: '/' | '/about' | '/login' | '/dashboard' | '/invoices'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dashboard' | '/invoices' | '/login'
+  to: '/' | '/about' | '/login' | '/dashboard' | '/invoices'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/about'
-    | '/(app)/dashboard'
-    | '/(app)/invoices'
     | '/(app)/login'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/invoices'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRoute: typeof AuthenticatedRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AboutRoute: typeof AboutRoute
-  appDashboardRoute: typeof appDashboardRoute
-  appInvoicesRoute: typeof appInvoicesRoute
   appLoginRoute: typeof appLoginRoute
 }
 
@@ -116,6 +114,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/invoices': {
+      id: '/_authenticated/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof AuthenticatedInvoicesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/(app)/login': {
       id: '/(app)/login'
       path: '/login'
@@ -123,29 +135,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(app)/invoices': {
-      id: '/(app)/invoices'
-      path: '/invoices'
-      fullPath: '/invoices'
-      preLoaderRoute: typeof appInvoicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(app)/dashboard': {
-      id: '/(app)/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof appDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRoute: AuthenticatedRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
-  appDashboardRoute: appDashboardRoute,
-  appInvoicesRoute: appInvoicesRoute,
   appLoginRoute: appLoginRoute,
 }
 export const routeTree = rootRouteImport

@@ -23,7 +23,7 @@ function Index() {
       <p>You can try going through these options.</p>
       <ol className="list-disc list-inside px-2">
         <li>
-          <Link to="/login" search={{ redirect: "/" }} className="text-blue-500 hover:opacity-75">
+          <Link to="/login" className="text-blue-500 hover:opacity-75">
             Go to the public login page.
           </Link>
         </li>

@@ -1,9 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { z } from "zod";
+import Login from "@/components/Login";
 
-export const Route = createFileRoute("/(app)/login")({
+export const Route = createFileRoute("/login")({
   component: RouteComponent,
-  validateSearch: (search) => ({
-    redirect: (search.redirect as string) || "/",
+  validateSearch: z.object({
+    redirect: z.string().optional().catch(""),
   }),
   beforeLoad: ({ context, search }) => {
     if (context.auth.isAuth) {
@@ -21,9 +23,5 @@ function RouteComponent() {
     auth.login({ email: "admin@example.com", password: "password123" });
     navigate({ to: redirect });
   };
-  return (
-    <div>
-      <button onClick={handleLogin}>Login</button>
-    </div>
-  );
+  return <Login onSubmit={handleLogin} />;
 }
